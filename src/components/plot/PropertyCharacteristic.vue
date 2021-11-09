@@ -41,11 +41,27 @@
                             emit-value
                             :options='propertyIndexOptions'
                             label='Seleccionar indices' />
+
                 </div>
+            <!--       <template v-if="selectIndexModel.value === 'v_ndvi'">
+                        <label>Nombre de Usuario</label>
+                      </template>        -->
               </div>
               <div class='row'>
                 <div class='col q-mb-md'>
-                  <VButtonDate v-model:date='propertyDateModel' v-model:options='propertyDateOptions' />
+                <template v-if="selectIndexModel === 'v_ndvi' ||selectIndexModel === 'v_ndre' ||selectIndexModel === 'v_msavi2' ||selectIndexModel === 'v_ndii' ||selectIndexModel === 'v_ndwi' ">
+                             <VButtonDate v-model:date='propertyDateModel' v-model:options='propertyDateOptions' />
+                             <VButtonDate v-model:date='propertyDateModel2' v-model:options='propertyDateOptions' />
+                 </template>
+                 <template v-else-if="selectIndexModel === 'v_floracion'">
+                             <VButtonDate v-model:date='propertyDateModel' v-model:options='propertyDateOptions' />
+                             <VButtonDate v-model:date='propertyDateModel2' v-model:options='propertyDateOptions' />
+                             <VButtonDate v-model:date='propertyDateModel3' v-model:options='propertyDateOptions' />
+                 </template>
+                 <template v-else>
+                             <VButtonDate v-model:date='propertyDateModel' v-model:options='propertyDateOptions' />
+                 </template>
+
                 </div>
               </div>
 
@@ -145,7 +161,8 @@ const propertyIndexOptions = [
   { label: '<span class="text-caption text-grey-7 q-ml-md">Vegetación [NDRE]</span>', value: 'v_ndre', html: true },
   { label: '<span class="text-caption text-grey-7 q-ml-md">Vegetación [MSAVI2]</span>', value: 'v_msavi2', html: true },
   { label: '<span class="text-caption text-grey-7 q-ml-md">Estrés hídrico [NDII]</span>', value: 'v_ndii', html: true },
-  { label: '<span class="text-caption text-grey-7 q-ml-md">Estrés hídrico [NDWI]</span>', value: 'v_ndwi', html: true }
+  { label: '<span class="text-caption text-grey-7 q-ml-md">Estrés hídrico [NDWI]</span>', value: 'v_ndwi', html: true },
+  { label: '<span class="text-caption text-grey-7 q-ml-md">Floración</span>', value: 'v_floracion', html: true },
 ];
 
 export default defineComponent({
@@ -208,6 +225,8 @@ export default defineComponent({
     const selectIndexModel: any = ref(null);
 
     const propertyDateModel = ref<any>(null);
+    const propertyDateModel2 = ref<any>(null);
+    const propertyDateModel3 = ref<any>(null);
     const propertyDateOptions = ref<Array<string>>([]);
 
 
@@ -247,11 +266,16 @@ export default defineComponent({
     });
     function selectIndex(index) {
       selectIndexModel.value = index;
-    }
+      }
     /*INDICES*/
     watch(selectIndexModel, async (val: any) => {
       avgIndex.value = [];
       if (val && propertyDescription.pre_id) {
+        if(val ==='v_ndvi' ||val ==='v_ndre' ||val ==='v_msavi2' ||val ==='v_ndii' ||val ==='v_ndwi'){
+          val=val.substr(2);
+        }else if ( val ==='v_floracion'){
+          val = 'ndvi';
+        }
         const data = await getAvgIndex(propertyDescription.pre_id, val); //Carga las fechas y promedios
         setDatesToComponent(data)
       }
@@ -259,12 +283,42 @@ export default defineComponent({
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     watchEffect(async ()=>{
-      if ( propertyDateModel.value) {
+      if ( selectIndexModel.value === 'v_ndvi' ||selectIndexModel.value === 'v_ndre' ||selectIndexModel.value === 'v_msavi2' ||selectIndexModel.value === 'v_ndii' ||selectIndexModel.value === 'v_ndwi'  ) {
         let dateModel=propertyDateModel.value
         let day=dateModel.split('/')[0]
         let month=dateModel.split('/')[1]
         let year=dateModel.split('/')[2]
-
+        let dateModel2=propertyDateModel2.value
+        let day2=dateModel2.split('/')[0]
+        let month2=dateModel2.split('/')[1]
+        let year2=dateModel2.split('/')[2]
+        let dashDate=dateUtil.dateToFormat(day,month,year,'YYYY-MM-DD')
+        let dashDate2=dateUtil.dateToFormat(day2,month2,year2,'YYYY-MM-DD')
+        await loadProjectImageData(selectIndexModel.value, dashDate,
+          dashDate2, dashDate);
+      }else if (selectIndexModel.value === 'v_floracion'){
+        let dateModel=propertyDateModel.value
+        let day=dateModel.split('/')[0]
+        let month=dateModel.split('/')[1]
+        let year=dateModel.split('/')[2]
+        let dateModel2=propertyDateModel2.value
+        let day2=dateModel2.split('/')[0]
+        let month2=dateModel2.split('/')[1]
+        let year2=dateModel2.split('/')[2]
+        let dateModel3=propertyDateModel3.value
+        let day3=dateModel3.split('/')[0]
+        let month3=dateModel3.split('/')[1]
+        let year3=dateModel3.split('/')[2]
+        let dashDate=dateUtil.dateToFormat(day,month,year,'YYYY-MM-DD')
+        let dashDate2=dateUtil.dateToFormat(day2,month2,year2,'YYYY-MM-DD')
+        let dashDate3=dateUtil.dateToFormat(day3,month3,year3,'YYYY-MM-DD')
+        await loadProjectImageData(selectIndexModel.value, dashDate,
+          dashDate2, dashDate3);
+      }else{
+        let dateModel=propertyDateModel.value
+        let day=dateModel.split('/')[0]
+        let month=dateModel.split('/')[1]
+        let year=dateModel.split('/')[2]
         let dashDate=dateUtil.dateToFormat(day,month,year,'YYYY-MM-DD')
         await loadProjectImageData(selectIndexModel.value, dashDate,
           dashDate, dashDate);
@@ -280,7 +334,9 @@ export default defineComponent({
 
     // Guarda las fechas en el componente y setea el promedio
      function setDatesToComponent(datesArray: Array<any>) {
-      propertyDateModel.value = ''; // QInput con la fecha
+      propertyDateModel.value = '';
+      propertyDateModel2.value = '';
+      propertyDateModel3.value = ''; // QInput con la fecha
       propertyDateOptions.value = [];
       if (datesArray && datesArray.length) {
         datesArray.forEach((value) => {
@@ -289,7 +345,9 @@ export default defineComponent({
         });
         store.commit('project/setFirstPeriodUtc', datesArray.reverse()[0][0]);
         store.commit('project/setPeriodAvg', datesArray.reverse()[0][1]);
-        propertyDateModel.value = dateUtil.utcFormat(datesArray.reverse()[0][0], 'DD/MM/YYYY'); //Poner la ultima fecha en el input Qselect qdate
+        propertyDateModel.value = dateUtil.utcFormat(datesArray.reverse()[0][0], 'DD/MM/YYYY');
+        propertyDateModel2.value = propertyDateModel.value;
+        propertyDateModel3.value = propertyDateModel.value; //Poner la ultima fecha en el input Qselect qdate
         return datesArray.reverse()[0][0]; //Retornar la fecha mas reciente
       }
       return;
@@ -319,6 +377,8 @@ export default defineComponent({
       propertyDescription,
       avgIndex,
       propertyDateModel,
+      propertyDateModel2,
+      propertyDateModel3,
       propertyDateOptions,
 
       indicatorLandPlotLegend
