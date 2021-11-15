@@ -76,6 +76,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     'prefer-promise-reject-errors': 'off',
+    'restrict-template-expressions':'off',
 
     // TypeScript
     quotes: ['warn', 'single', { avoidEscape: true }],
@@ -88,6 +89,8 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 0,
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/no-unused-vars': 0,
+    '@typescript-eslint/restrict-plus-operands': 0,
+    '@typescript-eslint/restrict-template-expressions:': 0,
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   }

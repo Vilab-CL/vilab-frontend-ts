@@ -10,6 +10,6 @@
     "declaration": false,
     "noImplicitAny": false,
     "noUnusedParameters": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": false
   }
 }

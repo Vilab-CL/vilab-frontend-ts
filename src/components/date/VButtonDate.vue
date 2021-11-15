@@ -1,9 +1,9 @@
 <template>
-  <q-input dense v-model='dateModel'  label='Periodo' title='Periodo'>
+  <q-input readonly dense v-model='dateModel' :label='title' :title='title'>
     <template v-slot:append>
       <q-icon name='event' class='cursor-pointer'>
-        <q-popup-proxy ref='qDateProxy'  transition-show='scale' transition-hide='scale' title='Periodo'>
-          <q-date v-model='dateModel' :options='optionsModel' years-in-month-view mask="DD/MM/YYYY"  emit-immediately>
+        <q-popup-proxy ref='qDateProxy' transition-show='scale' transition-hide='scale' :title='title'>
+          <q-date v-model='dateModel' :options='optionsModel' years-in-month-view :mask='mask' emit-immediately>
             <div class='row items-center justify-end'>
               <q-btn v-close-popup label='Ok' color='primary' flat />
             </div>
@@ -24,9 +24,14 @@ export default defineComponent({
       required: true,
       type: String
     },
-    options:{
-      required:false,
-      type:Array
+    options: {
+      required: false,
+      type: Array
+    },
+    title: String,
+    mask: {
+      type: String,
+      default: 'DD/MM/YYYY'
     }
   },
   setup(props, { emit }) {
@@ -47,7 +52,7 @@ export default defineComponent({
       }
     });
 
-    return { dateModel,optionsModel };
+    return { dateModel, optionsModel };
   }
 });
 </script>

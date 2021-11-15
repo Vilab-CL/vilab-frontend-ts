@@ -7,6 +7,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', name:'home',component: () => import('pages/Index.vue') },
       { path: '/plot',name:'plot.index', component: () => import('pages/plots/Index.vue') },
+      // { path: '/plot/:hash',name:'plot.index2', component: () => import('pages/plots/Index.vue') },
       { path: '/plot/add',name:'plot.add', component: () => import('pages/plots/CreatePlot.vue') },
       { path: '/roles',name:'role.index', component: () => import('pages/roles/ManageRole.vue') },
       { path: '/perfiles', component: () => import('pages/Index.vue') },

@@ -9,17 +9,19 @@ export default function() {
   async function getAvgIndex(landlot_id, index) {
     if (landlot_id && index) {
       try {
-
         const { data } = await api.post('predios/promedios', qs.stringify({
           pre_id: landlot_id,
           indice: index
         }));
-        avgIndex.value = data;
-        return data
+        if (data){
+          avgIndex.value = data;
+          return data
+        }
       } catch (e) {
         console.log(e);
       }
     }
+    return ;
   }
 
   return {

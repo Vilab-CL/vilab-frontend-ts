@@ -7,6 +7,7 @@ export interface ExampleStateInterface {
     thirdDate:number,
     avg:number
   },
+  project_description: any
 }
 
 function state(): ExampleStateInterface {
@@ -18,7 +19,8 @@ function state(): ExampleStateInterface {
       secondDate:0,
       thirdDate:0,
       avg:0
-    }
+    },
+    project_description: {}
   };
 }
 
