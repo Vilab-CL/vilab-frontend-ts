@@ -18,6 +18,10 @@ const getters: GetterTree<ExampleStateInterface, StateInterface> = {
   },
   getPeriodAvg: (state)=> {
     return state.selected_period_utc.avg;
+  },
+
+  getProjectDescription:(state)=>{
+    return state.project_description
   }
 };
 

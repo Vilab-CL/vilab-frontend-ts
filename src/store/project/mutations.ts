@@ -17,6 +17,11 @@ const mutation: MutationTree<ExampleStateInterface> = {
   },
   setPeriodAvg(state, payload){
     state.selected_period_utc.avg=payload
+  },
+
+  setProjectDescription(state,payload){
+    // state.project_description=payload
+    Object.assign(state.project_description,payload)
   }
 };
 

@@ -13,9 +13,6 @@ import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import 'leaflet-fullscreen/dist/leaflet.fullscreen.css';
-import 'leaflet-fullscreen/dist/Leaflet.fullscreen.min.js';
-import './Control.FullScreen.js'
 export default defineComponent({
   name: 'App'
 });

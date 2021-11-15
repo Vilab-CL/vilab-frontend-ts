@@ -12,6 +12,8 @@ export default class useProjects {
   protected plotPaginate: Ref<IPlotPaginateResponse>;
   protected projectIndexImage: Ref<IProjectIndexImage>;
   protected projectKml: Ref<any>;
+  protected projectDescription: Ref<any>;
+  protected projectWeather: Ref<any>;
 
   // private plots: Ref<Array<any>>;
 
@@ -20,6 +22,8 @@ export default class useProjects {
     this.plotPaginate = reactive<any>({});
     this.projectIndexImage = reactive<any>({});
     this.projectKml = reactive<any>({});
+    this.projectDescription = reactive<any>({});
+    this.projectWeather = reactive<any>({});
   }
 
 
@@ -37,6 +41,7 @@ export default class useProjects {
     return this.plot;
   }
 
+  // await useProject.fetchProjectListPaginate(15, 55, 1, 'asc', ''); // Obtener predios por paginacion
   async fetchProjectListPaginate(length, start, order_column, order_dir, search_value) {
     const { data } = await api.post('predios/predios_ajax', qs.stringify({
       length,
@@ -46,6 +51,7 @@ export default class useProjects {
       search_value
     }));
     this.plotPaginate.value = data;
+    return data;
   }
 
   async fetchProjectKml(project_id) {
@@ -57,8 +63,31 @@ export default class useProjects {
       return data.predio_kml;
     }
   }
-  getProjectKml(){
-    return this.projectKml.value
+
+  async fetchProjectById(project_id) {
+    if (project_id) {
+      const { data } = await api.post('predios/encontrar_datos_predio', qs.stringify({
+        pre_id: project_id
+      }));
+      this.projectDescription.value = data;
+      return data;
+    }
+  }
+
+
+  async fetchWeather(project_id, type, graphic_type, inf, sup) {
+
+    if (project_id && type && graphic_type && inf && sup) {
+      const { data } = await api.post('predios/clima', qs.stringify({
+        pre_id: project_id,
+        tipo: type,
+        tipo_grafico: graphic_type,
+        inf: inf,
+        sup: sup
+      }));
+      this.projectWeather.value = data;
+      return data;
+    }
   }
 
 }

@@ -18,7 +18,8 @@ const api = axios.create({
   withCredentials: false,
   headers: {
     'Accept': 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    // 'Access-Control-Allow-Origin': '*'
   }
 });
 

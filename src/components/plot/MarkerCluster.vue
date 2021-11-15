@@ -1,37 +1,27 @@
 <template>
-  <div style="display: none">
-    <slot v-if="ready"></slot>
+  <div style='display: none'>
+    <slot v-if='ready'></slot>
   </div>
 </template>
 
 <script>
-import "leaflet.markercluster/dist/MarkerCluster.css";
-import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import {
-  inject,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  ref,
-} from "vue";
-import { propsBinder, remapEvents } from "@vue-leaflet/vue-leaflet/src/utils";
-import {
-  render,
-  setup as layerSetup,
-} from "@vue-leaflet/vue-leaflet/src/functions/layer";
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import { inject, nextTick, onBeforeUnmount, onMounted, provide, ref } from 'vue';
+import { propsBinder, remapEvents } from '@vue-leaflet/vue-leaflet/src/utils';
+import { render, setup as layerSetup } from '@vue-leaflet/vue-leaflet/src/functions/layer';
 
 const props = {
   options: {
     type: Object,
     default() {
       return {};
-    },
-  },
+    }
+  }
 };
 
 export default {
-  name: "MarkerCluster",
+  name: 'MarkerCluster',
 
   props,
 
@@ -41,20 +31,20 @@ export default {
     const leafletRef = ref({});
     const ready = ref(false);
 
-    const addLayerToMainMap = inject("addLayer");
-    const removeLayerFromMainMap = inject("removeLayer");
+    const addLayerToMainMap = inject('addLayer');
+    const removeLayerFromMainMap = inject('removeLayer');
 
-    provide("canSetParentHtml", () => !!leafletRef.value.getElement());
+    provide('canSetParentHtml', () => !!leafletRef.value.getElement());
     provide(
-      "setParentHtml",
+      'setParentHtml',
       (html) => (leafletRef.value.getElement().innerHTML = html)
     );
     // provide('setIcon', (newIcon) => leafletRef.value.setIcon && leafletRef.value.setIcon(newIcon))
-    provide("addLayer", (layer) => {
+    provide('addLayer', (layer) => {
       // replace the provided addLayer function for child components of MarkerCluster so they add to the cluster rather than the map
       leafletRef.value.addLayer(layer.leafletObject);
     });
-    provide("removeLayer", (layer) => {
+    provide('removeLayer', (layer) => {
       leafletRef.value.removeLayer(layer.leafletObject);
     });
 
@@ -63,10 +53,10 @@ export default {
     const { methods } = layerSetup(props, leafletRef, context);
 
     onMounted(async () => {
-      const { DomEvent, marker } = await import("leaflet/dist/leaflet-src.esm");
+      const { DomEvent, marker } = await import('leaflet/dist/leaflet-src.esm');
 
       const { MarkerClusterGroup } = await import(
-        "leaflet.markercluster/dist/leaflet.markercluster-src.js"
+        'leaflet.markercluster/dist/leaflet.markercluster-src.js'
         );
       leafletRef.value = new MarkerClusterGroup(props.options);
 
@@ -78,11 +68,11 @@ export default {
       addLayerToMainMap({
         ...props,
         ...methods,
-        leafletObject: leafletRef.value,
+        leafletObject: leafletRef.value
       });
 
       ready.value = true;
-      await nextTick(() => context.emit("ready", leafletRef.value));
+      await nextTick(() => context.emit('ready', leafletRef.value));
     });
 
     onBeforeUnmount(
@@ -96,6 +86,6 @@ export default {
   },
   render() {
     return render(this.ready, this.$slots);
-  },
+  }
 };
 </script>
